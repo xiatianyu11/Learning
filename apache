@@ -132,6 +132,64 @@ Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/"：设置 ROUT
 <Location /balancer-manager>：启用和配置负载均衡管理器。
 
 
+Apache可以配置 HTTP 连接池以优化反向代理的性能。以下示例展示如何配置 HTTP 连接池：
+<IfModule mpm_prefork_module>
+    StartServers         5
+    MinSpareServers      5
+    MaxSpareServers     10
+    MaxRequestWorkers  150
+    MaxConnectionsPerChild   0
+</IfModule>
+
+<IfModule mpm_worker_module>
+    StartServers         2
+    MinSpareThreads     25
+    MaxSpareThreads     75
+    ThreadLimit         64
+    ThreadsPerChild     25
+    MaxRequestWorkers  150
+    MaxConnectionsPerChild   0
+</IfModule>
+
+<IfModule mpm_event_module>
+    StartServers         2
+    MinSpareThreads     25
+    MaxSpareThreads     75
+    ThreadLimit         64
+    ThreadsPerChild     25
+    MaxRequestWorkers  150
+    MaxConnectionsPerChild   0
+</IfModule>
+
+在上述配置中，mpm_prefork、mpm_worker 和 mpm_event 是三种不同的多处理模块（MPM），每种模块都可以根据需求进行调整，以优化 HTTP 连接池的性能。
+
+
+配置正向代理
+
+<VirtualHost *:8080>
+    ServerName proxy.example.com
+
+    # 允许代理功能
+    ProxyRequests On
+    ProxyVia On
+
+    # 允许访问的网络
+    <Proxy *>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+
+    # 设置日志
+    LogLevel proxy:debug
+    CustomLog logs/proxy_access_log common
+    ErrorLog logs/proxy_error_log
+</VirtualHost>
+解释配置
+ProxyRequests On: 启用正向代理功能。
+ProxyVia On: 启用 Via 头，以便客户端能够看到代理服务器的信息。
+<Proxy *>: 配置允许访问代理服务器的网络。在上述示例中，允许所有网络访问代理。可以根据需要限制允许的 IP 地址或网络。
+
+
 常见变量
 请求头变量
 %{HTTP_USER_AGENT}：用户代理（User-Agent）
@@ -274,3 +332,5 @@ CustomLog ${APACHE_LOG_DIR}/access.log extended
 
 %D：请求处理时间（微秒）
 %{X-Forwarded-For}i：X-Forwarded-For 头信息
+
+
