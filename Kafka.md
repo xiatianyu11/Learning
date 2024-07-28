@@ -47,8 +47,19 @@ Kafka 的 topic 可以分为多个 partition，允许并行处理消息，并实
 4. 工作流程
 3.1 生产者发送消息
 生产者将消息发送到指定的 topic。消息会被分配到一个 partition 中，具体的 partition 分配策略可以由生产者配置。
+
+3.1.1 确认（Acknowledgment）
+生产者可以配置不同的确认级别（acks），例如：
+acks=0：生产者不等待任何 broker 的确认。
+acks=1：生产者等待 leader broker 确认消息已写入。
+acks=all（或 acks=-1）：生产者等待所有副本都确认消息已写入。
+
 3.2 消息存储
 消息会被追加到 partition 的末尾。Kafka 持久化这些消息，并将其存储在磁盘上。
+
+3.2.1 保留策略
+消息在 partition 的日志文件中会根据 topic 的保留策略进行保留。保留策略可以是基于时间（例如，保留 7 天）或大小（例如，日志文件达到一定大小）。
+
 3.3 消费者读取消息
 消费者从 Kafka 订阅的 topic 中读取消息。每个 consumer 可以读取到分配给它的 partition 中的消息，并处理这些消息。
 3.4 消费者提交偏移量
