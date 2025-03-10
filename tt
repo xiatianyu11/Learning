@@ -332,3 +332,22 @@ mvn clean install
 
 总结
 通过这个项目，你可以学习到如何使用EJB 4.2、JDK 17、JBoss Tools、JBoss EAP 8、Spring MVC、JSP和Jakarta EE来构建一个企业级Java应用程序。这个应用程序实现了基本的CRUD操作，并且能够打包成EAR文件部署到JBoss EAP 8服务器上。
+
+ <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
+
+ <bean id="productService" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:global/myApp/ProductServiceBean!com.example.ejb.ProductService"/>
+    </bean>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/jee
+           http://www.springframework.org/schema/jee/spring-jee.xsd">
+
+  <!-- 配置 EJB 引用 -->
+    <jee:jndi-lookup id="myEJB" jndi-name="java:global/my-ejb-module/MyEJBImpl!com.example.ejb.MyEJB" />
