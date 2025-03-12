@@ -351,3 +351,15 @@ mvn clean install
 
   <!-- 配置 EJB 引用 -->
     <jee:jndi-lookup id="myEJB" jndi-name="java:global/my-ejb-module/MyEJBImpl!com.example.ejb.MyEJB" />
+
+
+
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<jboss-web version="7.1" xmlns="http://www.jboss.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee http://www.jboss.org/schema/jbossas/jboss-web_7_1.xsd">
+    <ejb-ref>
+    	<ejb-ref-name></ejb-ref-name>
+    </ejb-ref>
+</jboss-web>
