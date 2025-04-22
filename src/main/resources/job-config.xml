@@ -1,0 +1,99 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/batch 
+           http://www.springframework.org/schema/batch/spring-batch.xsd">
+
+    <batch:job id="updateUserJob">
+        <batch:step id="updateUserStep" next="updateUserStep1">
+            <batch:tasklet ref="updateStatusTasklet"/>
+        </batch:step>
+        <batch:step id="updateUserStep1" next="updateUserStep2" >
+            <batch:tasklet ref="updateStatusTasklet1" />
+            <batch:listeners>
+                <batch:listener ref="myTaskletListener"/>
+            </batch:listeners>
+        </batch:step>
+        <batch:step id="updateUserStep2">
+            <batch:tasklet ref="updateStatusTasklet2" transaction-manager="transactionManager"/>
+        </batch:step>
+    </batch:job>
+
+    <bean id="myTaskletListener" class="com.example.batch.MyTaskletListener"/>
+
+    <batch:job id="errorJob1" restartable="true">
+        <batch:step id="errorStep" >
+            <batch:tasklet ref="errorTasklet1">
+
+            </batch:tasklet>
+        </batch:step>
+    </batch:job>
+
+    <batch:job id="sampleJob">
+        <batch:step id="step1" next="decider">
+            <batch:tasklet>
+                <batch:chunk reader="reader" processor="processor" writer="writer" commit-interval="5"/>
+            </batch:tasklet>
+
+        </batch:step>
+
+        <!-- 决策点 -->
+        <batch:decision id="decider" decider="evenOddDecider">
+            <batch:next on="ODD" to="oddStep"/>
+            <batch:next on="EVEN" to="evenStep"/>
+        </batch:decision>
+
+        <batch:step id="oddStep" next="decider">
+            <batch:tasklet ref="oddTasklet">
+
+            </batch:tasklet>
+        </batch:step>
+
+        <batch:step id="evenStep">
+            <batch:tasklet ref="evenTasklet">
+
+            </batch:tasklet>
+        </batch:step>
+
+
+
+    </batch:job>
+
+
+    <bean id="updateStatusTasklet" class="com.example.batch.UpdateStatusTasklet">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="updateStatusTasklet1" class="com.example.batch.UpdateStatusTasklet1">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="updateStatusTasklet2" class="com.example.batch.UpdateStatusTasklet2">
+        <property name="jdbcTemplate" ref="jdbcTemplate"/>
+    </bean>
+
+    <bean id="evenOddDecider" class="com.example.batch.MyDecider"/>
+
+    <bean id="oddTasklet" class="com.example.batch.OddTasklet"/>
+
+    <bean id="evenTasklet" class="com.example.batch.EvenTasklet"/>
+
+    <bean id="errorTasklet1" class="com.example.batch.ErrorTasklet"/>
+
+    <bean id="reader" class="org.springframework.batch.item.support.ListItemReader">
+        <constructor-arg>
+            <list>
+                <value>item1</value>
+                <value>item2</value>
+                <value>item3</value>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="processor" class="com.example.batch.ItemProcessorImpl"/>
+    
+    <bean id="writer" class="org.springframework.batch.item.support.ListItemWriter"/>
+</beans>
