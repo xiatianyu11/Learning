@@ -1,0 +1,38 @@
+Option 1
+
+Keep ABC-FORM & ABC-APP unchanged, migrate all MND-MS/DD APIs to XXX-MS
+
+| Pros (Advantages)                       | Cons (Disadvantages)                              |
+| --------------------------------------- | ------------------------------------------------- |
+| Minimal changes to ABC-FORM and ABC-APP | Legacy architecture remains                       |
+| Lowest implementation effort            | No improvement to gateway capability              |
+| Fastest time to market                  | API standards remain inconsistent                 |
+| Lower migration and regression risk     | Technical debt continues to accumulate            |
+| No frontend refactoring required        | Limited scalability and extensibility             |
+| Existing integration logic preserved    | Harder to enforce unified security and governance |
+| Suitable for short-term delivery        | Not aligned with long-term platform strategy      |
+
+
+Option 2
+
+Migrate ABC-APP to XXX-GW, migrate MND-MS to XXX-MS, ABC-FORM requires changes
+
+| Pros (Advantages)                              | Cons (Disadvantages)                        |
+| ---------------------------------------------- | ------------------------------------------- |
+| Unified API gateway (XXX-GW)                   | Higher implementation complexity            |
+| Standardized API interface and governance      | Requires changes in ABC-FORM                |
+| Better long-term maintainability               | Longer delivery timeline                    |
+| Improved security, authentication, and routing | Higher initial cost                         |
+| Easier service expansion and integration       | Higher migration and regression risk        |
+| Clear separation of concerns                   | Requires coordination across multiple teams |
+| Strong alignment with platform strategy        | More extensive testing required             |
+
+summary
+| Aspect                 | Option 1 | Option 2 |
+| ---------------------- | -------- | -------- |
+| Short-term efficiency  | ✅ High   | ❌ Low    |
+| Long-term architecture | ❌ Weak   | ✅ Strong |
+| Risk level             | ✅ Low    | ❌ Higher |
+| Strategic alignment    | ❌ Low    | ✅ High   |
+
+
